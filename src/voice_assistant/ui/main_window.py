@@ -301,6 +301,9 @@ class MainWindow(QMainWindow):
         self._setup_tray()
         self._apply_styles()
 
+        # Set window icon
+        self.setWindowIcon(self._create_app_icon())
+
     def _setup_ui(self) -> None:
         """Initialize the user interface."""
         central_widget = QWidget()
@@ -460,26 +463,100 @@ class MainWindow(QMainWindow):
         self.tray_icon.setToolTip("Voice Studio")
         self._setup_tray_menu()
 
-    def _create_tray_icon(self) -> QIcon:
-        """Create tray icon with accent color."""
-        size = 64
+    def _create_app_icon(self, size: int = 128) -> QIcon:
+        """Create application icon with gradient background."""
         pixmap = QPixmap(size, size)
         pixmap.fill(QColor(0, 0, 0, 0))
 
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # Mic icon in accent color
+        # Background circle with gradient
+        center = size / 2
+        radius = size * 0.45
+
+        bg_gradient = QRadialGradient(center, center, radius)
+        bg_gradient.setColorAt(0, QColor("#1a1a24"))
+        bg_gradient.setColorAt(1, QColor("#0a0a0f"))
+        painter.setBrush(QBrush(bg_gradient))
+        painter.setPen(QPen(QColor(Colors.ACCENT), size * 0.02))
+        painter.drawEllipse(QPointF(center, center), radius, radius)
+
+        # Mic icon
+        accent = QColor(Colors.ACCENT)
+        mic_width = size * 0.18
+        mic_height = size * 0.28
+        mic_x = center - mic_width / 2
+        mic_y = center - mic_height / 2 - size * 0.05
+
+        # Mic body with gradient
+        mic_gradient = QLinearGradient(mic_x, mic_y, mic_x, mic_y + mic_height)
+        mic_gradient.setColorAt(0, accent.lighter(130))
+        mic_gradient.setColorAt(1, accent)
+        painter.setBrush(QBrush(mic_gradient))
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.drawRoundedRect(
+            int(mic_x), int(mic_y),
+            int(mic_width), int(mic_height),
+            mic_width / 2, mic_width / 2
+        )
+
+        # Mic stand arc
+        painter.setBrush(Qt.BrushStyle.NoBrush)
+        painter.setPen(QPen(accent, size * 0.025))
+        arc_width = mic_width * 1.8
+        arc_height = mic_height * 0.5
+        painter.drawArc(
+            int(center - arc_width / 2),
+            int(mic_y + mic_height * 0.6),
+            int(arc_width), int(arc_height),
+            0, -180 * 16
+        )
+
+        # Stand line
+        stand_y = mic_y + mic_height * 0.6 + arc_height / 2
+        painter.drawLine(
+            int(center), int(stand_y),
+            int(center), int(stand_y + size * 0.08)
+        )
+
+        # Base line
+        base_width = size * 0.15
+        base_y = stand_y + size * 0.08
+        painter.drawLine(
+            int(center - base_width / 2), int(base_y),
+            int(center + base_width / 2), int(base_y)
+        )
+
+        painter.end()
+        return QIcon(pixmap)
+
+    def _create_tray_icon(self) -> QIcon:
+        """Create tray icon (smaller, simpler version)."""
+        size = 22  # macOS tray icon size
+        pixmap = QPixmap(size, size)
+        pixmap.fill(QColor(0, 0, 0, 0))
+
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        # Simple mic icon for tray
         accent = QColor(Colors.ACCENT)
         painter.setBrush(accent)
         painter.setPen(accent)
-        painter.drawRoundedRect(20, 8, 24, 32, 10, 10)
 
-        painter.setBrush(QColor(0, 0, 0, 0))
-        painter.setPen(QPen(accent, 3))
-        painter.drawArc(12, 20, 40, 30, 0, -180 * 16)
-        painter.drawLine(32, 50, 32, 56)
-        painter.drawLine(22, 56, 42, 56)
+        # Mic body
+        mic_w, mic_h = 8, 11
+        mic_x = (size - mic_w) / 2
+        mic_y = 2
+        painter.drawRoundedRect(int(mic_x), int(mic_y), mic_w, mic_h, 4, 4)
+
+        # Arc and stand
+        painter.setBrush(Qt.BrushStyle.NoBrush)
+        painter.setPen(QPen(accent, 1.5))
+        painter.drawArc(4, 8, 14, 8, 0, -180 * 16)
+        painter.drawLine(11, 16, 11, 19)
+        painter.drawLine(7, 19, 15, 19)
 
         painter.end()
         return QIcon(pixmap)

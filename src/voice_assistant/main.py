@@ -28,6 +28,10 @@ def main() -> int:
     if not voice_app.initialize():
         return 1
 
+    # Set application icon (for Dock on macOS)
+    if voice_app.window:
+        app.setWindowIcon(voice_app.window._create_app_icon(512))
+
     # Start the application
     voice_app.start()
 

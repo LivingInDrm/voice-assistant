@@ -136,7 +136,7 @@ class SettingsDialog(QDialog):
                 min-width: 70px;
             }}
 
-            #settingsCombo {{
+            QComboBox {{
                 background-color: {Colors.BG_CARD};
                 border: 1px solid {Colors.BORDER};
                 border-radius: 6px;
@@ -145,16 +145,22 @@ class SettingsDialog(QDialog):
                 padding: 8px 12px;
             }}
 
-            #settingsCombo:hover {{
+            QComboBox:hover {{
                 border-color: {Colors.ACCENT};
             }}
 
-            #settingsCombo::drop-down {{
-                border: none;
-                width: 20px;
+            QComboBox:focus {{
+                border-color: {Colors.ACCENT};
             }}
 
-            #settingsCombo::down-arrow {{
+            QComboBox::drop-down {{
+                border: none;
+                width: 20px;
+                subcontrol-origin: padding;
+                subcontrol-position: right center;
+            }}
+
+            QComboBox::down-arrow {{
                 image: none;
                 border-left: 4px solid transparent;
                 border-right: 4px solid transparent;
@@ -162,13 +168,33 @@ class SettingsDialog(QDialog):
                 margin-right: 8px;
             }}
 
-            #settingsCombo QAbstractItemView {{
+            QComboBox::down-arrow:hover {{
+                border-top-color: {Colors.ACCENT};
+            }}
+
+            QComboBox QAbstractItemView {{
                 background-color: {Colors.BG_CARD};
                 border: 1px solid {Colors.BORDER};
                 border-radius: 6px;
                 color: {Colors.TEXT_PRIMARY};
-                selection-background-color: {Colors.BG_ELEVATED};
+                selection-background-color: {Colors.ACCENT_DIM};
+                selection-color: {Colors.TEXT_PRIMARY};
                 outline: none;
+                padding: 4px;
+            }}
+
+            QComboBox QAbstractItemView::item {{
+                padding: 6px 12px;
+                border-radius: 4px;
+                min-height: 24px;
+            }}
+
+            QComboBox QAbstractItemView::item:hover {{
+                background-color: {Colors.BG_ELEVATED};
+            }}
+
+            QComboBox QAbstractItemView::item:selected {{
+                background-color: {Colors.ACCENT_DIM};
             }}
 
             #keyInput {{
