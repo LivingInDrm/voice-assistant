@@ -1,0 +1,21 @@
+# Core GUI
+PyQt6>=6.6.0
+
+# Audio
+sounddevice>=0.4.6
+numpy>=1.24.0
+
+# Speech Recognition (Apple Silicon optimized)
+mlx-whisper>=0.4.0
+
+# Global Hotkeys
+pynput>=1.7.6
+
+# Configuration
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+
+# LLM APIs (for translation)
+anthropic>=0.18.0
+openai>=1.12.0
